@@ -15,8 +15,8 @@ public class CarritoController {
     private final CarritoService carritoService;
 
     @GetMapping
-    public List<CarritoDTO> listar() {
-        return carritoService.obtenerCarrito();
+    public List<CarritoDTO> listar(@RequestParam Long usuarioId) {
+        return carritoService.obtenerCarrito(usuarioId);
     }
 
     @PostMapping
@@ -34,4 +34,3 @@ public class CarritoController {
         carritoService.eliminarDelCarrito(id);
     }
 }
-

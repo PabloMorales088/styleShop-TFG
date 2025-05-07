@@ -22,7 +22,8 @@ public class CarritoMapper {
                 carrito.getId(),
                 carrito.getProducto().getId(),
                 carrito.getCantidad(),
-                carrito.getTalla()
+                carrito.getTalla(),
+                carrito.getUsuario().getId()
         );
     }
 }

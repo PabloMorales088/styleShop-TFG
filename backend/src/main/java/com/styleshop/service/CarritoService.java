@@ -22,20 +22,25 @@ public class CarritoService {
     private final ProductoRepository productoRepository;
     private final UsuarioRepository usuarioRepository;
 
-    // 🔄 Temporal: usuario con id 1
-    private Usuario getUsuario() {
-        return usuarioRepository.findById(1L).orElseThrow();
-    }
-
-    public List<CarritoDTO> obtenerCarrito() {
-        return carritoRepository.findByUsuarioId(getUsuario().getId()).stream()
+    public List<CarritoDTO> obtenerCarrito(Long usuarioId) {
+        return carritoRepository.findByUsuarioId(usuarioId).stream()
                 .map(CarritoMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
     public CarritoDTO agregarAlCarrito(CarritoDTO dto) {
-        Usuario usuario = getUsuario();
+        Usuario usuario = usuarioRepository.findById(dto.getUsuarioId()).orElseThrow();
         Producto producto = productoRepository.findById(dto.getProductoId()).orElseThrow();
+
+        List<Carrito> existentes = carritoRepository.findByUsuarioId(usuario.getId());
+
+        for (Carrito c : existentes) {
+            if (c.getProducto().getId().equals(producto.getId()) && c.getTalla().equals(dto.getTalla())) {
+                c.setCantidad(c.getCantidad() + dto.getCantidad());
+                return CarritoMapper.toDTO(carritoRepository.save(c));
+            }
+        }
+
         Carrito carrito = CarritoMapper.toEntity(dto, usuario, producto);
         return CarritoMapper.toDTO(carritoRepository.save(carrito));
     }
@@ -52,4 +57,3 @@ public class CarritoService {
         return CarritoMapper.toDTO(carritoRepository.save(carrito));
     }
 }
-
