@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -29,11 +30,10 @@ public class Pedido {
 
     private LocalDateTime fecha;
 
-    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
-    private List<PedidoDetalle> detalles;
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<PedidoDetalle> detalles = new ArrayList<>();
 
     public enum Estado {
         Procesando, Enviado, Entregado
     }
 }
-
